@@ -1,10 +1,15 @@
 #pragma once
 
+#include "core.h"
 #include "event.h"
 
-class Layer {
+class Layer
+{
 public:
-    virtual void OnTick(std::queue<Event*> &eventBus) {};
-    virtual void OnEvent(Event *event, std::queue<Event*> &eventBus) {};
-    virtual void Draw() {};
+    virtual void OnTick() {};
+    virtual bool OnEvent(Event* event) {return false;};
+    virtual void OnDraw() {};
+protected:
+    Layer() {};
+    virtual ~Layer() {};
 };

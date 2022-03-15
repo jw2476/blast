@@ -1,9 +1,21 @@
 #pragma once
 
-enum EventType {
-    KeyPress = 0
+#include "core.h"
+
+enum EventType
+{
+    CLOSE = 0,
+    KEY_PRESS,
+    CHAR_PRESS,
+    MOUSE_MOVE,
+    ACTION_BOX_ANSWER
 };
 
-class Event {
+class Event
+{
+public:
     virtual EventType GetType() = 0;
+protected:
+    Event(){};
+    virtual ~Event(){};
 };

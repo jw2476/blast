@@ -19,6 +19,7 @@ file(GLOB BLAST_SRC
      "src/*.h"
      "src/*.cpp"
 )
+include_directories("src")
 
 add_executable(blast ${BLAST_SRC})
 llvm_map_components_to_libnames(LLVM_LIBS support core irreader)

@@ -1,18 +1,25 @@
 #pragma once
 
 #include "core.h"
-#include "event.h"
+#include "raylib.h"
+#include "context.h"
 #include "layer.h"
 
-class App
-{
-public:
+#include "window.h"
+#include "editor.h"
+#include "actionbox.h"
+
+class App {
+public: 
     App();
     ~App();
 
     void Run();
-    void AttatchLayer(Layer *layer);
 private:
-    std::queue<Event*> eventBus;
     std::vector<Layer*> layerStack;
+    Context* context;
+
+    Window window;
+    Editor editor;
+    ActionBox actionBox;
 };

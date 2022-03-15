@@ -1,47 +1,49 @@
 #include "app.h"
-#include "raylib.h"
-
+#include "context.h"
 
 App::App()
 {
-    InitWindow(800, 450, "raylib [core] example - basic window");
-    SetTargetFPS(60);
+    this->context = Context::Get();
+    this->layerStack.push_back(&this->window);
+    this->layerStack.push_back(&this->editor);
+    this->layerStack.push_back(&this->actionBox);
 }
 
 App::~App()
 {
-    CloseWindow();
 }
 
 void App::Run()
 {
-    while (!WindowShouldClose())
+    while (true)
     {
-        for (Layer *layer : this->layerStack)
+        for (auto layer : this->layerStack)
         {
-            layer->OnTick(this->eventBus);
+            layer->OnTick();
         }
 
-        while (Event *event = this->eventBus.front())
+        while (!this->context->eventBus.empty())
         {
-            for (Layer *layer : this->layerStack)
+            Event *event = this->context->eventBus.front();
+            if (event->GetType() == CLOSE)
             {
-                layer->OnEvent(event, this->eventBus);
+                return;
             }
 
-            this->eventBus.pop();
+            for (int i = this->layerStack.size()-1; i >= 0; i-- )
+            {
+                if(this->layerStack[i]->OnEvent(event)) { // If true, no longer propogate the event
+                    break;
+                }
+            }
+            this->context->eventBus.pop();
         }
 
         BeginDrawing();
-        for (Layer *layer : this->layerStack)
+        for (auto layer : this->layerStack)
         {
-            layer->Draw();
+            layer->OnDraw();
         }
         EndDrawing();
     }
-}
-
-void App::AttatchLayer(Layer *layer)
-{
-    this->layerStack.push_back(layer);
 }
