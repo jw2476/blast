@@ -1,25 +1,26 @@
 #pragma once
 
-#include "core.h"
-#include "raylib.h"
 #include "context.h"
+#include "core.h"
 #include "layer.h"
+#include "raylib.h"
 
-#include "window.h"
-#include "editor.h"
 #include "actionbox.h"
+#include "editor.h"
+#include "window.h"
 
 class App {
-public: 
-    App();
-    ~App();
+public:
+  App();
+  ~App();
 
-    void Run();
+  void Run();
+
 private:
-    std::vector<Layer*> layerStack;
-    Context* context;
+  std::vector<Layer *> layerStack;
+  Context *context;
 
-    Window window;
-    Editor editor;
-    ActionBox actionBox;
+  Window window;
+  Editor editor;
+  ActionBox actionBox;
 };

@@ -4,13 +4,12 @@
 
 struct Context;
 
-class Field
-{
+class Field {
 public:
-    Field(Node *node, std::string data);
-    std::string data;
-    Node *node;
-    Context* ctx;
+  Field(Node *node, std::string data);
+  std::string data;
+  Node *node;
+  Context *ctx;
 
-    std::string Render();
+  std::string Render();
 };

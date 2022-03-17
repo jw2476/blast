@@ -4,20 +4,20 @@
 
 class Field;
 
-enum NodeType {
-    FUNCTION = 0
-};
+enum NodeType { ROOT = 0, FUNCTION, CALL };
 
 class Node {
-public: 
-    Node* parent;
-    std::vector<Node*> children;
-    std::vector<Field*> fields;
+public:
+  virtual ~Node();
 
-    virtual std::string Stringify() = 0;
+  Node *parent;
+  std::vector<Node *> children;
+  std::vector<Field *> fields;
+
+  virtual std::string Stringify() = 0;
+  virtual NodeType GetType() = 0;
 
 protected:
-    Node() {};
-    Node(Node* parent);
-    ~Node();  
+  Node(){};
+  Node(Node *parent);
 };

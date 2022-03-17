@@ -2,20 +2,19 @@
 
 #include "core.h"
 
-enum EventType
-{
-    CLOSE = 0,
-    KEY_PRESS,
-    CHAR_PRESS,
-    MOUSE_MOVE,
-    ACTION_BOX_ANSWER
+enum EventType {
+  CLOSE = 0,
+  KEY_PRESS,
+  CHAR_PRESS,
+  MOUSE_MOVE,
+  ACTION_BOX_ANSWER
 };
 
-class Event
-{
+class Event {
 public:
-    virtual EventType GetType() = 0;
+  virtual EventType GetType() = 0;
+
 protected:
-    Event(){};
-    virtual ~Event(){};
+  Event(){};
+  virtual ~Event(){};
 };

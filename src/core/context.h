@@ -2,34 +2,32 @@
 
 #include "core.h"
 #include "event.h"
-#include "raylib.h"
 #include "nodes/root.h"
+#include "raylib.h"
 
 static struct Context *ctx;
 
-struct Context
-{
-    Context() {
-        this->font = LoadFontEx("resources/fonts/JetBrainsMono-Medium.ttf", 24, nullptr, 250);
+struct Context {
+  Context() {
+    this->font = LoadFontEx("resources/fonts/JetBrainsMono-Medium.ttf", 24,
+                            nullptr, 250);
+  }
+
+  static Context *Get() {
+    if (ctx == nullptr) {
+      ctx = new Context();
     }
 
-    static Context* Get()
-    {
-        if (ctx == nullptr)
-        {
-            ctx = new Context();
-        }
+    return ctx;
+  }
 
-        return ctx;
-    }
+  std::queue<Event *> eventBus;
 
-    std::queue<Event*> eventBus;
+  std::string actionBoxPrompt;
+  std::string actionBoxAnswer;
 
-    std::string actionBoxPrompt;
-    std::string actionBoxAnswer;
+  Font font;
 
-    Font font;
-    
-    Root root;
-    Field* currentField;
+  Root root;
+  Field *currentField;
 };

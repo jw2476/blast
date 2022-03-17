@@ -1,18 +1,20 @@
 #pragma once
 
-#include "node.h"
 #include "field.h"
+#include "node.h"
 
 class Root : public Node {
 public:
-    Root() {};
-    ~Root() {};
+  Root(){};
+  ~Root(){};
 
-    virtual std::string Stringify() override {
-        std::string result = "";
-        for (auto& child : this->children) {
-            result += child->Stringify();
-        }
-        return result;
+  virtual std::string Stringify() override {
+    std::string result = "";
+    for (auto &child : this->children) {
+      result += child->Stringify();
     }
+    return result;
+  }
+
+  virtual NodeType GetType() override { return ROOT; }
 };

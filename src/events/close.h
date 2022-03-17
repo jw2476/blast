@@ -3,7 +3,5 @@
 #include "core/event.h"
 
 struct CloseEvent : public Event {
-    virtual EventType GetType() {
-        return CLOSE;
-    }
+  virtual EventType GetType() { return CLOSE; }
 };

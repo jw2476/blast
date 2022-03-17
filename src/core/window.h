@@ -1,16 +1,16 @@
 #pragma once
 
+#include "context.h"
 #include "core.h"
 #include "layer.h"
-#include "context.h"
 
-class Window : public Layer
-{
+class Window : public Layer {
 public:
-    Window();
-    ~Window();
+  Window();
+  ~Window();
 
-    virtual void OnTick() override; 
+  virtual void OnTick() override;
+
 private:
-    Context* ctx;
+  Context *ctx;
 };
