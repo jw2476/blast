@@ -3,12 +3,12 @@
 #include "field.h"
 #include "node.h"
 
-class Fn : public Node {
+class Arg : public Node {
 public:
-  Fn(Node *parent, std::string name);
+  Arg(Node *parent, std::string name);
 
   virtual std::string Stringify() override;
-  virtual NodeType GetType() override { return FUNCTION; };
+  virtual NodeType GetType() override { return ARG; };
   virtual llvm::Value* Codegen() override;
   static std::string Validate(Node *parent);
 

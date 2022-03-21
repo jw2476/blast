@@ -1,10 +1,11 @@
 #pragma once
 
 #include "core/core.h"
+#include "core/llvm.h"
 
 class Field;
 
-enum NodeType { ROOT = 0, FUNCTION, CALL };
+enum NodeType { ROOT = 0, FUNCTION, CALL, STRING, EXTERN, ARG };
 
 class Node {
 public:
@@ -16,6 +17,7 @@ public:
 
   virtual std::string Stringify() = 0;
   virtual NodeType GetType() = 0;
+  virtual llvm::Value* Codegen() = 0;
 
 protected:
   Node(){};

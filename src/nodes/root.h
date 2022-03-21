@@ -16,5 +16,7 @@ public:
     return result;
   }
 
+  virtual llvm::Value *Codegen() override;
+
   virtual NodeType GetType() override { return ROOT; }
 };

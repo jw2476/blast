@@ -1,14 +1,15 @@
 #pragma once
 
-#include "field.h"
 #include "node.h"
+#include "field.h"
 
-class Fn : public Node {
+
+class Extern : public Node {
 public:
-  Fn(Node *parent, std::string name);
+  Extern(Node *parent, std::string name);
 
   virtual std::string Stringify() override;
-  virtual NodeType GetType() override { return FUNCTION; };
+  virtual NodeType GetType() override { return EXTERN; };
   virtual llvm::Value* Codegen() override;
   static std::string Validate(Node *parent);
 

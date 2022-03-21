@@ -3,9 +3,10 @@
 #include "events/input.h"
 #include "nodes/call.h"
 #include "nodes/fn.h"
+#include "nodes/str.h"
+#include "nodes/extern.h"
+#include "nodes/arg.h"
 #include "raylib.h"
-#include <algorithm>
-#include <string>
 
 Editor::Editor() { this->ctx = Context::Get(); }
 
@@ -43,6 +44,11 @@ bool Editor::OnEvent(Event *e) {
         this->ctx->currentField = this->fields[idx + 1];
       }
     }
+
+    // Codegen
+    if (event->key == KEY_F5) {
+      this->ctx->root.Codegen();
+    }
   }
 
   if (e->GetType() == ACTION_BOX_ANSWER) {
@@ -60,6 +66,18 @@ bool Editor::OnEvent(Event *e) {
         this->insertionType = CALL;
         this->insertionStage = 2;
         this->ctx->actionBoxPrompt = "Function name?";
+      } else if (event->text == "string" || event->text == "str" || event->text == "s") {
+        this->insertionType = STRING;
+        this->insertionStage = 2;
+        this->ctx->actionBoxPrompt = "Value for string?";
+      } else if (event->text == "extern") {
+        this->insertionType = EXTERN;
+        this->insertionStage = 2;
+        this->ctx->actionBoxPrompt = "Function name?";
+      } else if (event->text == "arg") {
+        this->insertionType = ARG;
+        this->insertionStage = 2;
+        this->ctx->actionBoxPrompt = "Argument name?";
       } else {
         this->insertionStage = 0;
       }
@@ -72,11 +90,30 @@ bool Editor::OnEvent(Event *e) {
           auto *node = new Fn(this->GetParent(), this->ctx->actionBoxAnswer);
           this->SetCurrentField(node);
         }
-
         this->insertionStage = 0;
       } else if (this->insertionType == CALL) {
-        auto *node = new Call(this->GetParent(), this->ctx->actionBoxAnswer);
-        this->SetCurrentField(node);
+        if (this->CheckValidate(Call::Validate(this->GetParent()))) {
+          auto *node = new Call(this->GetParent(), this->ctx->actionBoxAnswer);
+          this->SetCurrentField(node);
+        }
+        this->insertionStage = 0;
+      } else if (this->insertionType == STRING) {
+        if (this->CheckValidate(String::Validate(this->GetParent()))) {
+          auto *node = new String(this->GetParent(), this->ctx->actionBoxAnswer);
+          this->SetCurrentField(node);
+        }
+        this->insertionStage = 0;
+      } else if (this->insertionType == EXTERN) {
+        if (this->CheckValidate(Extern::Validate(this->GetParent()))) {
+          auto *node = new Extern(this->GetParent(), this->ctx->actionBoxAnswer);
+          this->SetCurrentField(node);
+        }
+        this->insertionStage = 0;
+      } else if (this->insertionType == ARG) {
+        if (this->CheckValidate(Arg::Validate(this->GetParent()))) {
+          auto *node = new Arg(this->GetParent(), this->ctx->actionBoxAnswer);
+          this->SetCurrentField(node);
+        }
         this->insertionStage = 0;
       }
       return true;
@@ -93,15 +130,24 @@ bool Editor::OnEvent(Event *e) {
     }
   }
 
+  // Normal node insertion
+  if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_I)) {
+    this->insertionStage = 1;
+    this->ctx->actionBoxPrompt = "Node type to insert?";
+    this->insertIntoRoot = false;
+  }
+
+  // Root-mode node insertion
+  if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_R)) {
+    this->insertionStage = 1;
+    this->ctx->actionBoxPrompt = "Node type to insert?";
+    this->insertIntoRoot = true;
+  }
+
   return false;
 }
 
 void Editor::OnDraw() {
-  if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_I)) {
-    this->insertionStage = 1;
-    this->ctx->actionBoxPrompt = "Node type to insert?";
-  }
-
   this->fields.clear();
   this->FindFields(&this->ctx->root);
 
@@ -122,10 +168,8 @@ void Editor::OnDraw() {
         this->text.compare(this->textIndex, 1, NEWLINE) ==
             0) { // If end of text, colour set or end of line
       // DRAW BLOCK CODE
-      INFO("Drawing block: {}", block);
       DrawTextEx(this->ctx->font, block.c_str(), textPos, 24, 0, currentColor);
       Vector2 dims = MeasureTextEx(this->ctx->font, block.c_str(), 24, 0);
-      INFO("Block dims X:{}, Y:{}", dims.x, dims.y);
 
       if (this->text.size() == this->textIndex)
         break;

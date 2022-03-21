@@ -21,6 +21,7 @@ private:
 
   uint32_t insertionStage;
   NodeType insertionType;
+  bool insertIntoRoot;
 
   std::vector<Field *> fields;
   void FindFields(Node *node);
@@ -30,7 +31,7 @@ private:
     }
   }
   inline Node *GetParent() {
-    if (this->ctx->currentField == nullptr) {
+    if (this->ctx->currentField == nullptr || this->insertIntoRoot) {
       return &this->ctx->root;
     } else {
       return this->ctx->currentField->node;

@@ -6,6 +6,8 @@
 #include "spdlog/spdlog.h"
 #include "string"
 #include "vector"
+#include "sstream"
+#include "memory"
 
 #define WIDTH 640
 #define HEIGHT 480

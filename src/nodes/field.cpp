@@ -1,5 +1,6 @@
 #include "field.h"
 #include "core/context.h"
+#include <llvm-11/llvm/IR/Type.h>
 
 Field::Field(Node *node, std::string data)
     : data(data), node(node), ctx(Context::Get()) {
@@ -11,5 +12,17 @@ std::string Field::Render() {
     return "|" + this->data + "|";
   } else {
     return data;
+  }
+}
+
+llvm::Type* Field::GetLLVMType() {
+  if (this->data == "void") {
+    return llvm::Type::getVoidTy(this->ctx->context);
+  } else if (this->data == "i32") {
+    return llvm::Type::getInt32Ty(this->ctx->context);
+  } else if (this->data == "i8*") {
+    return llvm::Type::getInt8PtrTy(this->ctx->context);
+  } else {
+    ERROR("Unknown type: {}", this->data);
   }
 }

@@ -12,4 +12,5 @@ public:
   Context *ctx;
 
   std::string Render();
+  llvm::Type* GetLLVMType();
 };
