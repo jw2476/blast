@@ -36,4 +36,11 @@ private:
       return this->ctx->currentField->node;
     }
   }
+  inline bool CheckValidate(std::string validationResult) {
+    if (validationResult.empty()) return true;
+    else {
+      this->ctx->actionBoxPrompt = validationResult;
+      return false;
+    }
+  }
 };

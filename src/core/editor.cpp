@@ -68,8 +68,11 @@ bool Editor::OnEvent(Event *e) {
 
     if (this->insertionStage == 2) {
       if (this->insertionType == FUNCTION) {
-        auto *node = new Fn(this->GetParent(), this->ctx->actionBoxAnswer);
-        this->SetCurrentField(node);
+        if (this->CheckValidate(Fn::Validate(this->GetParent()))) {
+          auto *node = new Fn(this->GetParent(), this->ctx->actionBoxAnswer);
+          this->SetCurrentField(node);
+        }
+
         this->insertionStage = 0;
       } else if (this->insertionType == CALL) {
         auto *node = new Call(this->GetParent(), this->ctx->actionBoxAnswer);
@@ -106,51 +109,56 @@ void Editor::OnDraw() {
   this->textIndex = 0;
   Vector2 textPos = {50, 50};
   Color currentColor = RAYWHITE;
+  std::string block;
 
-  while (this->text.size() != this->textIndex) {
-    std::string block;
-    if (this->text.compare(this->textIndex, 7, "/colour") == 0) {
-      // Block has ended, draw text in current colour and increment text pos;
+  // Initialise frame before text render
+  ClearBackground(DARK100);
+
+  // Text rendering
+  while (this->text.size() != 0) {
+    if (this->textIndex == this->text.size() ||
+        (this->textIndex + 7 <= this->text.size() &&
+         this->text.compare(this->textIndex, 6, "/Color") == 0) ||
+        this->text.compare(this->textIndex, 1, NEWLINE) ==
+            0) { // If end of text, colour set or end of line
+      // DRAW BLOCK CODE
+      INFO("Drawing block: {}", block);
       DrawTextEx(this->ctx->font, block.c_str(), textPos, 24, 0, currentColor);
-      Vector2 dims = MeasureTextEx(this->ctx->font, block.c_str(), 32, 0);
-      if (dims.y == 24) // if all on one line, just increment x position
+      Vector2 dims = MeasureTextEx(this->ctx->font, block.c_str(), 24, 0);
+      INFO("Block dims X:{}, Y:{}", dims.x, dims.y);
+
+      if (this->text.size() == this->textIndex)
+        break;
+
+      if (this->text.compare(this->textIndex, 1, NEWLINE) != 0) {
         textPos.x += dims.x;
-      else {
-        std::string reverseBlock;
-        reverseBlock.reserve(block.size());
-        std::reverse_copy(block.begin(), block.end(), reverseBlock.begin());
-        uint32_t lastNewlineIndex = reverseBlock.find("\n");
-        std::string reversedLastLine = reverseBlock.substr(0, lastNewlineIndex);
-        std::string lastLine;
-        lastLine.reserve(reversedLastLine.size());
-        std::reverse_copy(reversedLastLine.begin(), reversedLastLine.end(),
-                          lastLine.begin());
-
-        // Now the last line has been found, measure its width and set the text
-        // position to that
-        Vector2 lastLineDims = MeasureTextEx(this->ctx->font, lastLine.c_str(), 24, 0);
-        textPos.x = 50 + lastLineDims.x;
-        textPos.y += dims.y - 24;
-        this->textIndex += 7; // Move past the /colour
-
-        // Pull colour out
-        uint8_t red = std::stoi(this->text.substr(this->textIndex + 1, this->textIndex + 4));
-        uint8_t green = std::stoi(this->text.substr(this->textIndex + 6, this->textIndex + 9));
-        uint8_t blue = std::stoi(this->text.substr(this->textIndex + 11, this->textIndex + 14));
-        uint8_t alpha = std::stoi(this->text.substr(this->textIndex + 16, this->textIndex + 19));
-        currentColor = {red, green, blue, alpha};
-
-        this->textIndex += 20; // 7 for /colour, 20 for the colour value
-        block = "";
+      } else {
+        textPos.x = 50;
+        textPos.y += 24;
       }
+
+      block = "";
+    }
+
+    if (this->text.compare(this->textIndex, 6, "/Color") == 0) {
+      // COLOUR CODE
+      this->textIndex += 6; // Move past the /colour
+      // Pull colour out
+      uint8_t red = std::stoi(this->text.substr(this->textIndex + 2, 3));
+      uint8_t green = std::stoi(this->text.substr(this->textIndex + 5, 3));
+      uint8_t blue = std::stoi(this->text.substr(this->textIndex + 8, 3));
+      uint8_t alpha = std::stoi(this->text.substr(this->textIndex + 11, 3));
+      currentColor = {red, green, blue, alpha};
+
+      this->textIndex += 16; // 12 for the colour value, 2 for the curly
+                             // brackets, 2 for the spaces
     } else {
-      block += this->text[this->textIndex];
+      if (this->text.compare(this->textIndex, 1, NEWLINE) !=
+          0) // Don't render newlines
+        block += this->text[this->textIndex];
       this->textIndex++;
     }
   }
-
-  ClearBackground(DARK100);
-  DrawTextEx(this->ctx->font, this->text.c_str(), {50, 50}, 24, 0, RAYWHITE);
 }
 
 void Editor::FindFields(Node *node) {

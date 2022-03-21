@@ -9,7 +9,7 @@ public:
 
   virtual std::string Stringify() override;
   virtual NodeType GetType() override { return FUNCTION; };
-  static std::string Validate(Node *parent, std::string name);
+  static std::string Validate(Node *parent);
 
   Field name;
   Field type;
