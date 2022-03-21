@@ -17,6 +17,7 @@ public:
 private:
   Context *ctx;
   std::string text;
+  uint32_t textIndex;
 
   uint32_t insertionStage;
   NodeType insertionType;

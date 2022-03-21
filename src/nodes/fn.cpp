@@ -5,6 +5,7 @@ Fn::Fn(Node *parent, std::string name)
 
 std::string Fn::Stringify() {
   std::string result = "";
+  result += GENCOLOUR(BLUE300);
   result += "fn " + this->name.Render() + "() " + this->type.Render() + " {" +
             NEWLINE;
   for (auto &child : this->children) {
