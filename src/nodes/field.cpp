@@ -1,6 +1,5 @@
 #include "field.h"
 #include "core/context.h"
-#include <llvm-11/llvm/IR/Type.h>
 
 Field::Field(Node *node, std::string data)
     : data(data), node(node), ctx(Context::Get()) {

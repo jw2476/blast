@@ -1,8 +1,6 @@
 #include "root.h"
 
 #include "core/context.h"
-#include <llvm-11/llvm/IR/Module.h>
-#include <memory>
 
 llvm::Value *Root::Codegen() {
   for (auto &child : this->children) {
@@ -49,7 +47,10 @@ llvm::Value *Root::Codegen() {
   pass.run(*Context::Get()->module);
   dest.flush();
 
+  Context::Get()->module->print(llvm::errs(), nullptr);
   Context::Get()->module = std::make_unique<llvm::Module>("progam", Context::Get()->context);
+
+  std::system("gcc output.o -no-pie -o program && gnome-terminal -- bash -c './program && read'");
 
   return nullptr;
 }

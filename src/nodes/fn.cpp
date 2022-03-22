@@ -2,7 +2,6 @@
 #include "core/context.h"
 #include "core/core.h"
 #include "core/llvm.h"
-#include <llvm-11/llvm/IR/BasicBlock.h>
 
 Fn::Fn(Node *parent, std::string name)
     : Node(parent), name(this, name), type(this, "void"){};
@@ -70,7 +69,7 @@ llvm::Value *Fn::Codegen() {
   if (this->type.data == "void")
     Context::Get()->builder.CreateRetVoid();
   else if (this->type.data == "i32")
-    Context::Get()->builder.CreateRet(0);
+    Context::Get()->builder.CreateRet(llvm::ConstantInt::get(llvm::Type::getInt32Ty(Context::Get()->context), 0, false));
   else {
     ERROR("Unknown return type: {}", this->type.data);
   }
