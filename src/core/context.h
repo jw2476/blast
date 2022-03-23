@@ -36,4 +36,5 @@ struct Context {
   llvm::LLVMContext context;
   llvm::IRBuilder<> builder;
   std::unique_ptr<llvm::Module> module;
+  std::unordered_map<std::string, llvm::Value*> variables;
 };

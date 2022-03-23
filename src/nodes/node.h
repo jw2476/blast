@@ -5,7 +5,7 @@
 
 class Field;
 
-enum NodeType { ROOT = 0, FUNCTION, CALL, STRING, EXTERN, ARG };
+enum NodeType { ROOT = 0, FUNCTION, CALL, STRING, EXTERN, ARG, ASSIGN, VARIABLE };
 
 class Node {
 public:

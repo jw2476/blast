@@ -23,5 +23,6 @@ llvm::Type* Field::GetLLVMType() {
     return llvm::Type::getInt8PtrTy(this->ctx->context);
   } else {
     ERROR("Unknown type: {}", this->data);
+    return nullptr;
   }
 }

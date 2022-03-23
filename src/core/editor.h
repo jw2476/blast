@@ -6,6 +6,8 @@
 #include "nodes/node.h"
 #include "raylib.h"
 
+enum InsertMode { INSIDE = 0, AFTER };
+
 class Editor : public Layer {
 public:
   Editor();
@@ -21,7 +23,7 @@ private:
 
   uint32_t insertionStage;
   NodeType insertionType;
-  bool insertIntoRoot;
+  InsertMode insertMode;
 
   std::vector<Field *> fields;
   void FindFields(Node *node);
@@ -31,14 +33,21 @@ private:
     }
   }
   inline Node *GetParent() {
-    if (this->ctx->currentField == nullptr || this->insertIntoRoot) {
+    if (this->ctx->currentField == nullptr) {
       return &this->ctx->root;
-    } else {
-      return this->ctx->currentField->node;
     }
+
+    if (this->insertMode == INSIDE) {
+      return this->ctx->currentField->node;
+    } else if (this->insertMode == AFTER) {
+      return this->ctx->currentField->node->parent;
+    }
+
+    return nullptr;
   }
   inline bool CheckValidate(std::string validationResult) {
-    if (validationResult.empty()) return true;
+    if (validationResult.empty())
+      return true;
     else {
       this->ctx->actionBoxPrompt = validationResult;
       return false;

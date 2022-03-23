@@ -6,6 +6,8 @@
 #include "nodes/str.h"
 #include "nodes/extern.h"
 #include "nodes/arg.h"
+#include "nodes/assign.h"
+#include "nodes/var.h"
 #include "raylib.h"
 
 Editor::Editor() { this->ctx = Context::Get(); }
@@ -78,6 +80,14 @@ bool Editor::OnEvent(Event *e) {
         this->insertionType = ARG;
         this->insertionStage = 2;
         this->ctx->actionBoxPrompt = "Argument name?";
+      } else if (event->text == "assign" || event->text == "a") {
+        this->insertionType = ASSIGN;
+        this->insertionStage = 2;
+        this->ctx->actionBoxPrompt = "Variable name?";
+      } else if (event->text == "var" || event->text == "v") {
+        this->insertionType = VARIABLE;
+        this->insertionStage = 2;
+        this->ctx->actionBoxPrompt = "Variable name?";
       } else {
         this->insertionStage = 0;
       }
@@ -115,6 +125,18 @@ bool Editor::OnEvent(Event *e) {
           this->SetCurrentField(node);
         }
         this->insertionStage = 0;
+      } else if (this->insertionType == ASSIGN) {
+        if (this->CheckValidate(Assign::Validate(this->GetParent()))) {
+          auto *node = new Assign(this->GetParent(), this->ctx->actionBoxAnswer);
+          this->SetCurrentField(node);
+        }
+        this->insertionStage = 0;
+      } else if (this->insertionType == VARIABLE) {
+        if (this->CheckValidate(Var::Validate(this->GetParent()))) {
+          auto *node = new Var(this->GetParent(), this->ctx->actionBoxAnswer);
+          this->SetCurrentField(node);
+        }
+        this->insertionStage = 0;
       }
       return true;
     }
@@ -134,14 +156,14 @@ bool Editor::OnEvent(Event *e) {
   if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_I)) {
     this->insertionStage = 1;
     this->ctx->actionBoxPrompt = "Node type to insert?";
-    this->insertIntoRoot = false;
+    this->insertMode = INSIDE;
   }
 
   // Root-mode node insertion
-  if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_R)) {
+  if (IsKeyDown(KEY_LEFT_CONTROL) && IsKeyDown(KEY_A)) {
     this->insertionStage = 1;
     this->ctx->actionBoxPrompt = "Node type to insert?";
-    this->insertIntoRoot = true;
+    this->insertMode = AFTER;
   }
 
   return false;
