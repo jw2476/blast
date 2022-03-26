@@ -9,7 +9,7 @@ std::string Arg::Stringify() {
   result += GENCOLOUR(RED300);
   result += this->type.Render();
   result += " ";
-  result += GENCOLOUR(PURPLE300);
+  result += GENCOLOUR(BLUE300);
   result += this->name.Render();
   return result;
 };

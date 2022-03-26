@@ -11,7 +11,7 @@ std::string Assign::Stringify() {
   result += this->type.Render();
   result += " ";
 
-  result += GENCOLOUR(PURPLE300);
+  result += GENCOLOUR(BLUE300);
   result += this->name.Render();
 
   result += GENCOLOUR(RAYWHITE);

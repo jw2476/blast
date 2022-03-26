@@ -6,7 +6,7 @@ Var::Var(Node *parent, std::string name) : Node(parent), name(this, name) {}
 
 std::string Var::Stringify() {
     std::string result;
-    result += GENCOLOUR(PURPLE300);
+    result += GENCOLOUR(BLUE300);
     result += this->name.Render();
     return result;
 }
