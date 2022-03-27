@@ -1,8 +1,7 @@
 #pragma once
 
-#include "node.h"
 #include "field.h"
-
+#include "node.h"
 
 class Extern : public Node {
 public:
@@ -10,7 +9,7 @@ public:
 
   virtual std::string Stringify() override;
   virtual NodeType GetType() override { return EXTERN; };
-  virtual llvm::Value* Codegen() override;
+  virtual llvm::Value *Codegen() override;
   static std::string Validate(Node *parent);
 
   Field name;

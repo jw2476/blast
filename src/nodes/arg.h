@@ -9,7 +9,7 @@ public:
 
   virtual std::string Stringify() override;
   virtual NodeType GetType() override { return ARG; };
-  virtual llvm::Value* Codegen() override;
+  virtual llvm::Value *Codegen() override;
   static std::string Validate(Node *parent);
 
   Field name;
